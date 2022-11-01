@@ -55,24 +55,25 @@
                 android:layout_marginTop="20sp">
 
                 <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/nameEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Enter your name"
                     android:inputType="text"
                     android:textColor="#363A43"
-                    android:textColorHint="#718089"/>
+                    android:textColorHint="#718089" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <Button
+                android:id="@+id/startBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:background="@color/design_default_color_primary"
                 android:text="Start"
                 android:textColor="@color/white"
-                android:textSize="18sp"
-                />
+                android:textSize="18sp" />
         </LinearLayout>
 
 
