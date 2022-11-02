@@ -2,7 +2,7 @@ package com.example.quizapp
 
 data class Question(
     val Id: Int,
-    val questions: String,
+    val question: String,
     val image: Int,
     val optionOne: String,
     val optionTwo: String,
