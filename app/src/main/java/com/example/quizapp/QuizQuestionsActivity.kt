@@ -5,10 +5,7 @@ import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import androidx.core.content.ContextCompat
 
 //// Why do we use View.OnClickListener => to have all the onClickListeners inside of one function here onClick()
@@ -67,6 +64,8 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
         for(_textView in allTextViews){
             _textView.setOnClickListener(this)
         }
+
+        submitButton!!.setOnClickListener(this)
     }
 
     private fun getAllViews() {
@@ -85,16 +84,23 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun populateAllViews() {
+        currentQuestion = allQuestions!![currentQuestionNumber!!]
+
         questionTextView?.text = currentQuestion?.question
         flagImageView?.setImageResource(currentQuestion?.image!!)
 
-        progressBar?.progress = currentQuestionNumber!!
+        progressBar?.progress = currentQuestionNumber!! + 1
         progressBarTextView?.text = "${currentQuestionNumber!! + 1}/${allQuestions!!.size}"
 
         option1TextView?.text = currentQuestion?.optionOne
         option2TextView?.text = currentQuestion?.optionTwo
         option3TextView?.text = currentQuestion?.optionThree
         option4TextView?.text = currentQuestion?.optionFour
+
+        /// to reset
+        deselectAllTextView()
+        selectedOption = 0
+        submitButton!!.text = "SUBMIT"
     }
 
     override fun onClick(view: View?) {
@@ -125,6 +131,69 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
                     onTextViewSelect(it, 4)
                 }
             }
+
+            R.id.submitButton -> {
+                if(selectedOption == 0){
+                    showToast("Select an option")
+                } else {
+                    if(submitButton!!.text == "SUBMIT"){
+                        onAnswerSubmit()
+                    } else {
+                        /// more questions
+                        if(currentQuestionNumber!! < allQuestions!!.size-1) {
+                            moveToNextQuestion()
+                        } else{
+                            showToast("You made it")
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun onAnswerSubmit() {
+        if(selectedOption != currentQuestion!!.correctAnswer){
+            changeSelectedTextViewBg(selectedOption, R.drawable.wrong_option_bg)
+        }
+        submitButton!!.text = "Go to next Question"
+        changeSelectedTextViewBg(currentQuestion!!.correctAnswer, R.drawable.correct_option_bg)
+    }
+
+    private fun moveToNextQuestion() {
+        currentQuestionNumber= currentQuestionNumber!! + 1
+        /// reset
+        populateAllViews()
+    }
+
+    private fun changeSelectedTextViewBg(_optionNumber: Int, drawableView: Int) {
+        when(_optionNumber){
+            1 -> {
+                option1TextView!!.background = ContextCompat.getDrawable(
+                    this,
+                    drawableView
+                )
+            }
+
+            2 -> {
+                option2TextView!!.background = ContextCompat.getDrawable(
+                    this,
+                    drawableView
+                )
+            }
+
+            3 -> {
+                option3TextView!!.background = ContextCompat.getDrawable(
+                    this,
+                    drawableView
+                )
+            }
+
+            4 -> {
+                option4TextView!!.background = ContextCompat.getDrawable(
+                    this,
+                    drawableView
+                )
+            }
         }
     }
 
@@ -133,7 +202,7 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
 
         println(selectedOption)
 
-        deselectAllTextView(textView)
+        deselectAllTextView()
 
         textView.setTextColor(Color.parseColor("#363A43"))
 
@@ -149,7 +218,7 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
         )
     }
 
-    private fun deselectAllTextView(textView: TextView) {
+    private fun deselectAllTextView() {
         for (_textView in allTextViews){
             _textView.setTextColor(Color.parseColor("#7A8089"))
             _textView.typeface = Typeface.DEFAULT
@@ -161,5 +230,9 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
                 R.drawable.default_option_border_bg
             )
         }
+    }
+
+    private fun showToast(_text: String){
+        Toast.makeText(this, _text, Toast.LENGTH_LONG).show()
     }
 }
