@@ -1,5 +1,6 @@
 package com.example.quizapp
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +16,9 @@ import androidx.core.content.ContextCompat
 
 /// Now our class QuizQuestionsActivity also extends from View.OnClickListener
 class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
+    private var username: String? = null
+    private var number_of_correct_answers: Int = 0
+
     private var allQuestions: ArrayList<Question>? = null
     private var currentQuestion: Question? = null
     private var currentQuestionNumber: Int? = null
@@ -39,6 +43,9 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_quiz_questions)
+
+        /// We can retrieve values passed to this intent like this
+        username = intent.getStringExtra(Constants.USER_NAME)
 
         currentQuestionNumber = 0
         allQuestions = Constants.getQuestions()
@@ -143,7 +150,7 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
                         if(currentQuestionNumber!! < allQuestions!!.size-1) {
                             moveToNextQuestion()
                         } else{
-                            showToast("You made it")
+                            moveToResultIntent()
                         }
                     }
                 }
@@ -154,6 +161,8 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
     private fun onAnswerSubmit() {
         if(selectedOption != currentQuestion!!.correctAnswer){
             changeSelectedTextViewBg(selectedOption, R.drawable.wrong_option_bg)
+        } else {
+            number_of_correct_answers++
         }
         submitButton!!.text = "Go to next Question"
         changeSelectedTextViewBg(currentQuestion!!.correctAnswer, R.drawable.correct_option_bg)
@@ -230,6 +239,15 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
                 R.drawable.default_option_border_bg
             )
         }
+    }
+
+    private fun moveToResultIntent() {
+        val resultIntent = Intent(this, ResultActivity::class.java)
+        resultIntent.putExtra(Constants.USER_NAME, username)
+        resultIntent.putExtra(Constants.NUMBER_OF_CORRECT_ANSWERS, number_of_correct_answers)
+
+        startActivity(resultIntent)
+        finish()
     }
 
     private fun showToast(_text: String){

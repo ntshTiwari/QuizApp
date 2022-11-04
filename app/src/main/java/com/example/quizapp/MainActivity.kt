@@ -21,6 +21,10 @@ class MainActivity : AppCompatActivity() {
             } else {
                 /// this is how we get an intent
                 val quizQuestionIntent =  Intent(this, QuizQuestionsActivity::class.java)
+
+                /// We can send values passed to this intent like this
+                quizQuestionIntent.putExtra(Constants.USER_NAME, nameEditText.text.toString())
+
                 /// this will start the activity
                 /// or move us to that screen
                 startActivity(quizQuestionIntent)

@@ -2,6 +2,11 @@ package com.example.quizapp
 
 object Constants {
 
+    /// these are strings that are used to send and retrieve data with reference
+    val USER_NAME: String = "user_name"
+    val NUMBER_OF_CORRECT_ANSWERS: String = "number_of_correct_answers"
+
+
     fun getQuestions(): ArrayList<Question> {
         val questionsList = ArrayList<Question>()
 
